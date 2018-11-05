@@ -64,28 +64,29 @@ fn main2(username: String, password: String) -> Result<(), imap::error::Error> {
 struct MailClient;
 impl MailClient {
 
-    fn test_connect(&self, username: String, password: String) -> bool 
+    fn test_connect(&self, username: String, password: String) -> String 
     {
         match self.test_connect_internal() {
-            Ok(_) => true,
-            Err(e) => {
-                println!("ERROR: {}", e);
-                false
-            }
+            Ok(_) => String::from("Success"),
+            Err(e) => format!("ERROR: {}", e),
         }
     }
 
     fn test_connect_internal(&self)
     -> imap::error::Result<()>
     {
-        use std::error::Error;
         let server = rail_imap::Server::load_conf("settings.json")
             .map_err(|e| imap::error::Error::Io(
-                std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    e)
-                )
+                std::io::Error::new(std::io::ErrorKind::Other, e))
             )?;
+
+        let mut connection = server.connect()?;
+
+        println!("FOLDERS:");
+        for folder in connection.list_folders()?.iter() {
+            println!("\n- {:?}", folder);
+            let f = rail_imap::Folder::new(&mut connection, folder);    
+        }
 
         Ok(())
     }

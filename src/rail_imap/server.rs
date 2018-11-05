@@ -5,7 +5,6 @@ use rail_imap::{
 };
 use imap::error::Result as ImapResult;
 use imap::client as imap_client;
-use std::io::{Read, Write};
 
 pub struct Server {
     domain: String,
@@ -68,7 +67,12 @@ impl Server {
     fn connect_insecure(&self) -> ImapResult<Box<Connection>>
     {
         println!("WARNING! You are connecting not securely to the server");
-        panic!("NO SSL CONNECTIONS NOT SUPPORTED");
+        let socket_addr = (self.domain.as_ref(), self.port);
+  
+        let client = imap_client::connect(socket_addr)?;
+        let imap_socket = client.login(&self.username, &self.password)
+            .map_err(|(error, _client)| error)?;
+        Ok(Box::new(InsecureConnection::new(imap_socket)) as Box<Connection>)
     }
 
     fn connect_secure(&self) -> ImapResult<Box<Connection>> {

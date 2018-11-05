@@ -8,3 +8,8 @@ imap = { git = "https://github.com/mattnenterprise/rust-imap.git" }
 native-tls = "0.2.2"
 qmlrs = "0.1.1"
 config = "0.9.1"
+
+# SMTP stuff
+# https://lettre.at/creating-messages/email.html
+# lettre = "0.8"
+# lettre_email = "0.8"
