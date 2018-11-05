@@ -1,0 +1,10 @@
+[package]
+name = "rail"
+version = "0.1.0"
+authors = ["Matteo De Carlo <matteo.dek@gmail.com>"]
+
+[dependencies]
+imap = { git = "https://github.com/mattnenterprise/rust-imap.git" }
+native-tls = "0.2.2"
+qmlrs = "0.1.1"
+config = "0.9.1"
